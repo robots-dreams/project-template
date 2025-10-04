@@ -11,9 +11,9 @@ on:
       - develop
 
 jobs:
-  build:
+  install:
+    name: Install dependencies
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,17 +28,59 @@ jobs:
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --no-interaction
 
-      - name: Run PHPUnit with coverage
-        run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml tests/AppTest --display-deprecations --display-notices --display-warnings --coverage-text
+      - name: Upload vendor cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-      - name: Run PHPStan
-        run: vendor/bin/phpstan analyse src --level 9 --memory-limit 256M
+  tests:
+    name: Run Tests
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+      - run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml tests/AppTest --display-deprecations --display-notices --display-warnings --coverage-text
 
-      - name: Run PHPMD
-        run: vendor/bin/phpmd src ansi ruleset.xml
+  static-analysis:
+    name: Static Analysis
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+      - run: vendor/bin/phpstan analyse src --level 9 --memory-limit 256M
+      - run: vendor/bin/phpmd src ansi ruleset.xml
 
-      - name: Run PHPCS
-        run: vendor/bin/phpcs
+  code-style:
+    name: Code Style
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+      - run: vendor/bin/phpcs
 
-      - name: Run local-php-security-checker
-        run: ./local-php-security-checker --no-dev
+  security:
+    name: Security Check
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+      - run: ./local-php-security-checker --no-dev
