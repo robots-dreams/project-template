@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RobotsDreams\ProjectTemplate\App\Service;
+namespace App\Service;
 
 class TestService
 {
