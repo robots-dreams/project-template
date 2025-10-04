@@ -50,6 +50,8 @@ jobs:
         with:
           name: vendor
           path: vendor
+      - name: Fix permissions
+        run: chmod +x vendor/bin/*
       - run: XDEBUG_MODE=coverage vendor/bin/phpunit --configuration phpunit.xml tests/AppTest --display-deprecations --display-notices --display-warnings --coverage-text
 
   static-analysis:
@@ -67,6 +69,8 @@ jobs:
         with:
           name: vendor
           path: vendor
+      - name: Fix permissions
+        run: chmod +x vendor/bin/*
       - run: vendor/bin/phpstan analyse src --level 9 --memory-limit 256M
       - run: vendor/bin/phpmd src ansi ruleset.xml
 
@@ -85,6 +89,8 @@ jobs:
         with:
           name: vendor
           path: vendor
+      - name: Fix permissions
+        run: chmod +x vendor/bin/*
       - run: vendor/bin/phpcs
 
   security:
