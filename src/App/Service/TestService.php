@@ -13,4 +13,9 @@ class TestService
     {
         return !$value;
     }
+
+    public function methodWithBooleanArgumentFlag($flag = true): bool
+    {
+        return true;
+    }
 }
