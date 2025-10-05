@@ -11,6 +11,6 @@ class TestService
 {
     public function invert(bool $value): bool
     {
-        return !$value;
+        return ! $value;
     }
 }
