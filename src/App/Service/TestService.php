@@ -18,4 +18,9 @@ class TestService
     {
         return true;
     }
+
+    function methodWithNotTypedArgument($userId)
+    {
+        return $userId;
+    }
 }
