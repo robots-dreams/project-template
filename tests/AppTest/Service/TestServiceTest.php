@@ -21,8 +21,8 @@ class TestServiceTest extends TestCase
 
     public function dataProviderTestInvert(): Generator
     {
-        yield [true, false];
-        yield [false, true];
+        yield [true, true];
+        yield [false, false];
     }
 
     /**

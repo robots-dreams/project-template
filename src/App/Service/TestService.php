@@ -11,6 +11,16 @@ class TestService
 {
     public function invert(bool $value): bool
     {
-        return ! $value;
+        return !$value;
+    }
+
+    public function methodWithBooleanArgumentFlag($flag = true): bool
+    {
+        return true;
+    }
+
+    function methodWithNotTypedArgument($userId)
+    {
+        return $userId;
     }
 }
